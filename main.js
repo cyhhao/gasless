@@ -1,4 +1,5 @@
 const { default: axios } = require('axios')
+const path = require('path');
 const io = require("socket.io-client");
 const socket = io("https://wss.gasless.info");
 const nativeImage = require('electron').nativeImage
@@ -50,9 +51,9 @@ const setConfig = (event) => {
     }
     else if (event.groupId === 1) {
         app._coinSelect = event.id === "none" ? null : event.id
-        let image = nativeImage.createFromPath(`assets/clear.png`)
+        let image = nativeImage.createFromPath(path.join(__dirname, '/assets/clear.png'))
         if (app._coinSelect) {
-            image = nativeImage.createFromPath(`assets/${app._coinSelect}.png`)
+            image = nativeImage.createFromPath(path.join(__dirname, `/assets/${app._coinSelect}.png`))
         }
         image = image.resize({ width: 16, height: 16, quality: "good" })
         app.tray.setImage(image)
@@ -61,7 +62,9 @@ const setConfig = (event) => {
 
 }
 app.whenReady().then(async () => {
-    app.tray = new Tray('assets/clear.png')
+    console.log(path.join(__dirname))
+
+    app.tray = new Tray(path.join(__dirname, '/assets/clear.png'))
 
     contextMenu = Menu.buildFromTemplate([
         { id: "tips", label: 'Suggest | Low | Safe (gwei)' },
@@ -85,14 +88,18 @@ app.whenReady().then(async () => {
                 {
                     id: 'bitcoin',
                     label: 'BTC', type: "radio",
-                    icon: nativeImage.createFromPath(`assets/bitcoin.png`).resize({ width: 16, height: 16, quality: "good" }),
+                    icon: nativeImage
+                        .createFromPath(path.join(__dirname, '/assets/bitcoin.png'))
+                        .resize({ width: 16, height: 16, quality: "good" }),
                     click: async (e) => {
                         setConfig(e)
                     }
                 },
                 {
                     id: "ethereum", label: 'ETH', type: "radio",
-                    icon: nativeImage.createFromPath(`assets/ethereum.png`).resize({ width: 16, height: 16, quality: "good" }),
+                    icon: nativeImage
+                        .createFromPath(path.join(__dirname, '/assets/ethereum.png'))
+                        .resize({ width: 16, height: 16, quality: "good" }),
                     click: async (e) => {
                         setConfig(e)
                     }
@@ -108,7 +115,7 @@ app.whenReady().then(async () => {
         }
     ])
 
-    app.dock.hide()
+
 
     app.tray.setTitle("GasLess")
     app.tray.setToolTip('Suggest | Low | Safe')
@@ -128,5 +135,8 @@ app.whenReady().then(async () => {
     })
 
     forceUpdate()
+    require('update-electron-app')()
+
+    app.dock.hide()
 
 })
