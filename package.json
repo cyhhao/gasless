@@ -1,0 +1,17 @@
+{
+  "name": "gasless",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.22.0",
+    "electron": "^15.1.0",
+    "socket.io": "^4.2.0",
+    "socket.io-client": "^4.2.0"
+  }
+}
