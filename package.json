@@ -1,13 +1,14 @@
 {
   "name": "gasless",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "repository": "https://github.com/cyhhao/gasless",
   "description": "",
   "main": "main.js",
   "scripts": {
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "electron": "electron ."
   },
   "author": "cyhhao",
   "license": "ISC",

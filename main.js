@@ -1,9 +1,14 @@
-const { default: axios } = require('axios')
 const path = require('path');
+const { app, Menu, Tray, autoUpdater, dialog, BrowserWindow } = require('electron')
+
 const io = require("socket.io-client");
-const socket = io("https://wss.gasless.info");
+const socket = io("wss://wss.gasless.info");
+socket.io.on("error", (error) => {
+    console.log(error)
+});
+
 const nativeImage = require('electron').nativeImage
-const { app, Menu, Tray, BrowserWindow } = require('electron')
+
 app.tray = null
 app._gasSelect = true
 app._gasData = {}
@@ -36,7 +41,9 @@ const forceUpdate = () => {
         console.log(res.gasprice)
         app._gasData = res.gasprice
         app._priceData = res.coinprice
+        _update()
     })
+
 }
 
 
@@ -46,8 +53,11 @@ const setConfig = (event) => {
             app._gasSelect = false
             app._gasData = {}
         }
+        else {
+            app._gasSelect = true
+            forceUpdate()
+        }
         _update()
-
     }
     else if (event.groupId === 1) {
         app._coinSelect = event.id === "none" ? null : event.id
@@ -61,13 +71,18 @@ const setConfig = (event) => {
     }
 
 }
+
 app.whenReady().then(async () => {
-    console.log(path.join(__dirname))
 
     app.tray = new Tray(path.join(__dirname, '/assets/clear.png'))
 
     contextMenu = Menu.buildFromTemplate([
-        { id: "tips", label: 'Suggest | Low | Safe (gwei)' },
+        {
+            id: "tips", label: 'Suggest | Low | Safe (gwei)', click: () => {
+                require('electron').shell.openExternal("https://gasless.info")
+            }
+        },
+
         { type: 'separator' },
         {
             id: 'gasprice', label: 'Gas Price', type: 'checkbox', checked: true, click: async (e) => {
@@ -109,14 +124,24 @@ app.whenReady().then(async () => {
         },
         { type: 'separator' },
         {
+            id: "versions", label: `Check for Update (v${app.getVersion()})`, click: () => {
+                const win = new BrowserWindow({
+                })
+
+                win.loadURL("https://github.com/cyhhao/gasless/releases")
+            }
+        },
+        { type: 'separator' },
+        {
             label: 'Quit', click: async () => {
                 app.quit()
             }
         }
+
     ])
 
 
-
+    app.dock.hide()
     app.tray.setTitle("GasLess")
     app.tray.setToolTip('Suggest | Low | Safe')
     app.tray.setContextMenu(contextMenu)
@@ -135,8 +160,12 @@ app.whenReady().then(async () => {
     })
 
     forceUpdate()
-    require('update-electron-app')()
 
-    app.dock.hide()
+    app.on('window-all-closed', function () {
+
+    })
+
+
+
 
 })
