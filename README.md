@@ -7,7 +7,7 @@
 
 1. Go to [Releases](https://github.com/cyhhao/gasless/releases) to download the latest version
 2. Unzip it
-3. Drag gasless.app into Application
+3. Drag gasless.app into Application or double-click to open directly
 
 # Features
 
@@ -20,7 +20,7 @@
 
 - Support gas price for more chains
 - Support more currency prices, including custom currencies
-- Welcome to raise more [issues](./issues) ...
+- Welcome to raise more [issues](https://github.com/cyhhao/gasless/issues) ...
 
 # Thanks
 
