@@ -1,5 +1,6 @@
 # In memory of GasNow
 
+![](docs/gasnow.png)
 
 # Installation
 
