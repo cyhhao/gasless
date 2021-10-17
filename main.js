@@ -2,7 +2,14 @@ const path = require('path');
 const { app, Menu, Tray, autoUpdater, dialog, BrowserWindow } = require('electron')
 
 const io = require("socket.io-client");
-const socket = io("wss://wss.gasless.info");
+
+const { Manager } = require("socket.io-client");
+const manager = new Manager("ws://127.0.0.1:3000", {
+    timeout: 2000
+});
+const socket = manager.socket("/");
+
+// const socket = io("wss://wss.gasless.info");
 socket.io.on("error", (error) => {
     console.log(error)
 });
@@ -14,7 +21,7 @@ app._gasSelect = true
 app._gasData = {}
 
 app._coinSelect = null
-app._priceData = {}
+app._coinData = {}
 
 
 
@@ -25,8 +32,8 @@ const _update = () => {
     let logoTxt = ""
     if (app._gasSelect && app._gasData)
         gasTxt = `${app._gasData.suggest} | ${app._gasData.low} | ${app._gasData.safe}`
-    if (app._priceData && app._priceData[app._coinSelect]) {
-        let coin = app._priceData[app._coinSelect]
+    if (app._coinData && app._coinData[app._coinSelect]) {
+        let coin = app._coinData[app._coinSelect]
         priceTxt = ` $${coin.current_price} | `
     }
 
@@ -38,9 +45,9 @@ const _update = () => {
 
 const forceUpdate = () => {
     socket.emit("init", {}, (res) => {
-        console.log(res.gasprice)
+        console.log(res.gasprice, res.coinprice)
         app._gasData = res.gasprice
-        app._priceData = res.coinprice
+        app._coinData = res.coinprice
         _update()
     })
 
