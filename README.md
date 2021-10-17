@@ -6,7 +6,7 @@
 
 **Currently only available for MacOS system**
 
-1. Go to [Releases](https://github.com/cyhhao/gasless/releases) to download the latest version
+1. Go to [Releases](https://github.com/cyhhao/gasless/releases) or [gasless.info](https://gasless.info) to download the latest version
 2. Unzip it
 3. Drag gasless.app into Application or double-click to open directly
 
