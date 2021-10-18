@@ -4,12 +4,12 @@ const { app, Menu, Tray, autoUpdater, dialog, BrowserWindow } = require('electro
 const io = require("socket.io-client");
 
 const { Manager } = require("socket.io-client");
-const manager = new Manager("ws://127.0.0.1:3000", {
-    timeout: 2000
+const manager = new Manager("wss://wss.gasless.info", {
+    timeout: 5000,
+    // transports: ["websocket", "polling"],
 });
 const socket = manager.socket("/");
 
-// const socket = io("wss://wss.gasless.info");
 socket.io.on("error", (error) => {
     console.log(error)
 });
@@ -45,7 +45,7 @@ const _update = () => {
 
 const forceUpdate = () => {
     socket.emit("init", {}, (res) => {
-        console.log(res.gasprice, res.coinprice)
+        console.log(res.gasprice)
         app._gasData = res.gasprice
         app._coinData = res.coinprice
         _update()
@@ -158,11 +158,13 @@ app.whenReady().then(async () => {
 
     socket.on("gasprice", (data) => {
         app._gasData = data
+        console.log("on gasprice", app._gasData)
         _update()
     })
 
     socket.on("coinprice", (data) => {
         app._coinData = data
+        console.log("on coinprice")
         _update()
     })
 
